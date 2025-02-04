@@ -1,0 +1,11 @@
+flask              
+Flask-SQLAlchemy   
+greenlet           
+idna               
+imbalanced-learn             
+joblib         
+numpy              
+pandas
+scikit-learn            
+sklearn-compat
+
