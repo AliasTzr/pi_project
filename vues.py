@@ -1,4 +1,4 @@
-from flask import request, jsonify, send_file
+from flask import request, jsonify, send_file, make_response
 import joblib
 import os
 import zipfile
@@ -40,6 +40,10 @@ def check_signature(sample, feature_names, signatures):
                 return signature["Conditions"], signature["Classes"]
     return None, None
 
+@app.route('/')  # Définir la route racine
+def index():
+    return jsonify({"message": "Welcome"}), 200
+
 @app.route('/init-model', methods=["GET"])
 def init():
     # Chemin du fichier ZIP
@@ -60,12 +64,7 @@ def init():
                 json.dump(rows, json_file, indent=4)
             return send_file("dataset/fichier_test.json", as_attachment=True)
         else:
-            return jsonify({"message": "Le fichier reste.csv n'existe pas"})
-
-app.route("/", methods=["GET"])
-def index():
-    return jsonify({"message" :"hello-world"}), 200
-
+            return jsonify({"message": "Le fichier reste.csv n'existe pas"}), 400
 
 app.route('/predict', methods=["POST"])
 def predict():
