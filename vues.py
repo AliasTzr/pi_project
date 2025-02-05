@@ -69,14 +69,14 @@ def init():
 app.route('/predict', methods=["POST"])
 def predict():
     try:
-        signatures = pd.read_csv("signature_cleaned.csv")
+        signatures = pd.read_csv("model_files/signature_cleaned.csv")
     except FileNotFoundError:
         print("Le fichier signature_cleaned.csv n'existe pas.")
         signatures = pd.DataFrame(columns=["Conditions", "Classes"])
 
     try:
-        decision_tree_model = joblib.load('intrusion_detection_model.pkl')
-        scaler = joblib.load('scaler.pkl')
+        decision_tree_model = joblib.load('model_files/intrusion_detection_model.pkl')
+        scaler = joblib.load('model_files/scaler.pkl')
     except FileNotFoundError:
         print("Les fichiers du modèle ou du scaler n'existent pas.")
         decision_tree_model = None
@@ -86,15 +86,14 @@ def predict():
         if not isinstance(data, list):
             return jsonify({"error": "Les données doivent être une liste"}), 400
         for index, row in data:
-            data_frame = pd.DataFrame([row]),
-            data_frame = data_frame[X_train_columns]
+            data_frame = pd.DataFrame([row])[X_train_columns]
             new_data_scaled = scaler.transform(data_frame)
             sample = new_data_scaled[0]
             conditon, signature_class = check_signature(sample, X_train_columns, signatures)
             signtre = Signatures(
                 classe = signature_class,
                 conditon = conditon,
-                data = str(row)
+                data = str(data_frame.to_dict(orient="records")[0])
             )
             db.session.add(signtre)
             db.session.commit()
