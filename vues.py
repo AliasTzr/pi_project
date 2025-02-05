@@ -41,8 +41,8 @@ def check_signature(sample, feature_names, signatures):
     return None, None
 
 @app.route('/')  # Définir la route racine
-def index():
-    return jsonify({"message": "Welcome"}), 200
+def home():
+    return jsonify({"message": "Hello-world"}), 200
 
 @app.route('/init-model', methods=["GET"])
 def init():
