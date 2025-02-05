@@ -8,4 +8,5 @@ numpy
 pandas
 scikit-learn            
 sklearn-compat
+psycopg2
 
