@@ -40,7 +40,7 @@ def check_signature(sample, feature_names, signatures):
                 return signature["Conditions"], signature["Classes"]
     return None, None
 
-@app.route('/init-model')
+@app.route('/init-model', methods=["GET"])
 def init():
     # Chemin du fichier ZIP
     zip_path = "dataset/dataset.zip"
@@ -62,7 +62,7 @@ def init():
         else:
             return jsonify({"message": "Le fichier reste.csv n'existe pas"})
 
-app.route("/")
+app.route("/", methods=["GET"])
 def index():
     return jsonify({"message" :"hello-world"}), 200
 
