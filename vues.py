@@ -89,10 +89,10 @@ def predict():
             data_frame = pd.DataFrame([row])[X_train_columns]
             new_data_scaled = scaler.transform(data_frame)
             sample = new_data_scaled[0]
-            conditon, signature_class = check_signature(sample, X_train_columns, signatures)
+            condition, signature_class = check_signature(sample, X_train_columns, signatures)
             signtre = Signatures(
                 classe = signature_class,
-                conditon = conditon,
+                condition = str(condition),
                 data = str(data_frame.to_dict(orient="records")[0])
             )
             db.session.add(signtre)
