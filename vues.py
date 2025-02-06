@@ -37,7 +37,7 @@ def check_signature(sample, feature_names, signatures):
     if signatures is not None:
         for index, signature in signatures.iterrows():
             if is_signature_satisfied(signature, sample, feature_names):
-                return signature["Condition"], signature["Classes"]
+                return signature["Conditions"], signature["Classes"]
     return None, None
 
 @app.route('/')  # Définir la route racine
