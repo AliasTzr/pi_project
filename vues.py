@@ -66,7 +66,7 @@ def init():
         else:
             return jsonify({"message": "Le fichier reste.csv n'existe pas"}), 400
 
-app.route('/predict', methods=["POST"])
+@app.route('/predict', methods=["POST"])
 def predict():
     try:
         signatures = pd.read_csv("model_files/signature_cleaned.csv")
