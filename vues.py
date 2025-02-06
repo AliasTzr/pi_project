@@ -85,7 +85,7 @@ def predict():
         data = request.get_json()
         if not isinstance(data, list):
             return jsonify({"error": "Les données doivent être une liste"}), 400
-        for index, row in data:
+        for row in data:
             data_frame = pd.DataFrame([row])[X_train_columns]
             new_data_scaled = scaler.transform(data_frame)
             sample = new_data_scaled[0]
