@@ -108,23 +108,25 @@ data = {
     "Sub_Cat": "DoS-Synflooding"
 }
 
-with open("dataset/fichier_test.json", "r", encoding="utf-8") as f:
-    data_list = json.load(f)  # Liste de dictionnaires
+# with open("dataset/fichier_test.json", "r", encoding="utf-8") as f:
+#     data_list = json.load(f)  # Liste de dictionnaires
 
 # Définir les colonnes à comparer
-columns_to_check = ["Flow_Duration", "Src_Port", "Dst_Port", "Init_Bwd_Win_Byts", "Flow_IAT_Min", "Bwd_PSH_Flags"]
+# columns_to_check = ["Flow_Duration", "Src_Port", "Dst_Port", "Init_Bwd_Win_Byts", "Flow_IAT_Min", "Bwd_PSH_Flags"]
 
 # Extraire uniquement les colonnes d'intérêt
-data_frame = pd.DataFrame([data])[columns_to_check]
+# data_frame = pd.DataFrame([data])[columns_to_check]
+
+print(len('Flow_Duration <= -0.11669943109154701 AND Init_Bwd_Win_Byts <= -0.46345798671245575 AND Flow_IAT_Min > -0.24809429049491882 AND Dst_Port > -0.6557728 ... (420 characters truncated) ...  <= -0.2020341232419014 AND Flow_Duration <= -0.16560815274715424 AND Flow_Duration > -0.1776994839310646 AND Init_Bwd_Win_Byts > -0.5980668365955353'))
 
 # Convertir en dictionnaire (une seule ligne)
-json_data = data_frame.to_dict(orient="records")[0]
-print(len(str(json_data)))
+# json_data = data_frame.to_dict(orient="records")[0]
+# print(len(str(json_data)))
 
 # Compter les occurrences dans le fichier JSON
-count = sum(1 for item in data_list if all(item.get(key) == value for key, value in json_data.items()))
+# count = sum(1 for item in data_list if all(item.get(key) == value for key, value in json_data.items()))
 
 # Afficher le résultat
-print(f"Nombre d'occurrences trouvées : {count}")
+# print(f"Nombre d'occurrences trouvées : {count}")
 
 # Afficher la longueur de la chaîne

@@ -37,7 +37,7 @@ def check_signature(sample, feature_names, signatures):
     if signatures is not None:
         for index, signature in signatures.iterrows():
             if is_signature_satisfied(signature, sample, feature_names):
-                return signature["Conditions"], signature["Classes"]
+                return signature["condition"], signature["Classes"]
     return None, None
 
 @app.route('/')  # Définir la route racine
@@ -91,7 +91,7 @@ def predict():
             sample = new_data_scaled[0]
             condition, signature_class = check_signature(sample, X_train_columns, signatures)
             signtre = Signatures(
-                classe = signature_class,
+                classe = str(signature_class),
                 condition = str(condition),
                 data = str(data_frame.to_dict(orient="records")[0])
             )
