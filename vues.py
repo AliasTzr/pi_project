@@ -5,7 +5,7 @@ import zipfile
 import csv, json
 from .treatment import create_model
 from . import app, db, pd, socketio
-from .models import Signatures, User
+from .models import Signatures, Users
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
@@ -132,14 +132,14 @@ def register():
     data = request.get_json()
 
     # Vérifier si l'utilisateur existe déjà
-    if User.query.filter_by(email=data['email']).first():
+    if Users.query.filter_by(email=data['email']).first():
         return jsonify({'error': 'Cet email est déjà utilisé'}), 400
 
     # Hasher le mot de passe
     hashed_password = generate_password_hash(data['password'])
 
     # Créer l'utilisateur
-    new_user = User(email=data['email'], password_hash=hashed_password)
+    new_user = Users(email=data['email'], password_hash=hashed_password)
     db.session.add(new_user)
     db.session.commit()
 
@@ -148,7 +148,7 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    user = User.query.filter_by(email=data['email']).first()
+    user = Users.query.filter_by(email=data['email']).first()
 
     # Vérifier si l'utilisateur existe et si le mot de passe est correct
     if user and check_password_hash(user.password_hash, data['password']):
