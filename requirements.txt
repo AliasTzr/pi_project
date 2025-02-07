@@ -9,4 +9,7 @@ pandas
 scikit-learn            
 sklearn-compat
 psycopg2
+flask-socketio
+flask_jwt_extended
+werkzeug
 

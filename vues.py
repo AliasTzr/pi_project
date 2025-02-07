@@ -4,8 +4,11 @@ import os
 import zipfile
 import csv, json
 from .treatment import create_model
-from . import app, db, pd
-from .models import Signatures
+from . import app, db, pd, socketio
+from .models import Signatures, User
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+
 
 
 
@@ -67,7 +70,9 @@ def init():
             return jsonify({"message": "Le fichier reste.csv n'existe pas"}), 400
 
 @app.route('/predict', methods=["POST"])
+@jwt_required()
 def predict():
+    user_id = get_jwt_identity()  # 🔹 Récupère l'utilisateur connecté
     try:
         signatures = pd.read_csv("model_files/signature_cleaned.csv")
     except FileNotFoundError:
@@ -93,7 +98,8 @@ def predict():
             signtre = Signatures(
                 classe = str(signature_class),
                 condition = str(condition),
-                data = str(data_frame.to_dict(orient="records")[0])
+                data = str(data_frame.to_dict(orient="records")[0]),
+                user_id=user_id
             )
             db.session.add(signtre)
             db.session.commit()
@@ -103,3 +109,50 @@ def predict():
     except Exception as e:
         return jsonify({'erreur': str(e)}), 500
     
+#Socket IO
+@socketio.on("connect")
+def handle_connect():
+    user_id = request.args.get("user_id")
+    if user_id:
+        print(f"Utilisateur {user_id} connecté aux WebSockets")
+        socketio.emit(f"user_connected_{user_id}", {
+            "message": "Connexion réussie",
+            "user_id": user_id
+        })
+
+
+
+
+
+
+
+#For USER
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+
+    # Vérifier si l'utilisateur existe déjà
+    if User.query.filter_by(email=data['email']).first():
+        return jsonify({'error': 'Cet email est déjà utilisé'}), 400
+
+    # Hasher le mot de passe
+    hashed_password = generate_password_hash(data['password'])
+
+    # Créer l'utilisateur
+    new_user = User(username=data['username'], email=data['email'], password_hash=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({'message': 'Utilisateur enregistré avec succès'}), 201
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    user = User.query.filter_by(email=data['email']).first()
+
+    # Vérifier si l'utilisateur existe et si le mot de passe est correct
+    if user and check_password_hash(user.password_hash, data['password']):
+        access_token = create_access_token(identity=user.id)
+        return jsonify({'message': 'Connexion réussie', 'token': access_token}), 200
+
+    return jsonify({'error': 'Email ou mot de passe incorrect'}), 401
