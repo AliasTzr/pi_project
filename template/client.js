@@ -1,5 +1,7 @@
-const socket = io("http://127.0.0.1:5000", {
-    query: 1
+const user_id = 1
+
+const socket = io("https://pi-project-i6z7.onrender.com", {
+    query: { user_id }
 });
 
 // 🔹 Message de confirmation de connexion

@@ -139,7 +139,7 @@ def register():
     hashed_password = generate_password_hash(data['password'])
 
     # Créer l'utilisateur
-    new_user = User(username=data['username'], email=data['email'], password_hash=hashed_password)
+    new_user = User(email=data['email'], password_hash=hashed_password)
     db.session.add(new_user)
     db.session.commit()
 
